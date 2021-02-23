@@ -74,13 +74,15 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
   getProjects: PropTypes.func.isRequired,
   removeAllProjects: PropTypes.func.isRequired,
+  recoverAllProjects: PropTypes.func.isRequired,
+  deleteAllRemovedProjects: PropTypes.func.isRequired,
   projects: PropTypes.object.isRequired,
-  recoverAllProjects: PropTypes.object.isRequired,
-  deleteAllRemovedProjects: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   projects: state.projects,
+  errors: state.errors,
 });
 
 export default connect(mapStateToProps, {

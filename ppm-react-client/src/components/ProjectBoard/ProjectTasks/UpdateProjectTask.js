@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
-  addProjectTask,
+  updateProjectTask,
   getProjectTask,
 } from "../../../actions/backlogActions";
 import classnames from "classnames";
@@ -40,6 +40,7 @@ class UpdateProjectTask extends Component {
       const projectTask = nextProps.backlog.project_task;
       this.setState(projectTask);
     } else {
+      console.log(nextProps.errors);
       this.setState({ errors: nextProps.errors });
     }
   }
@@ -58,8 +59,9 @@ class UpdateProjectTask extends Component {
       priority: this.state.priority,
       dueDate: this.state.dueDate,
     };
-    this.props.addProjectTask(
+    this.props.updateProjectTask(
       this.props.match.params.projectIdentifier,
+      this.props.match.params.projectSequence,
       newProjectTask,
       this.props.history
     );
@@ -169,7 +171,7 @@ class UpdateProjectTask extends Component {
 }
 UpdateProjectTask.propTypes = {
   getProjectTask: PropTypes.func.isRequired,
-  addProjectTask: PropTypes.func.isRequired,
+  updateProjectTask: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
   backlog: PropTypes.object.isRequired,
 };
@@ -181,5 +183,5 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
   getProjectTask,
-  addProjectTask,
+  updateProjectTask,
 })(UpdateProjectTask);

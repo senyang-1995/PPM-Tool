@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import {
@@ -111,7 +110,7 @@ class ProjectBoard extends Component {
         </div>
         <br />
         <hr />
-        <Backlog pt="projectTask" />
+        <Backlog project_tasks={this.props.backlog.project_tasks} />
       </div>
     );
   }

@@ -58,7 +58,7 @@ class AddProject extends Component {
   }
 
   render() {
-    const { errors } = (this.state.error = "") ? null : this.state;
+    const { errors } = this.state.error === "" ? null : this.state;
     return (
       <div>
         <div className="project mt-5">

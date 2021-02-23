@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import ProjectTask from "./ProjectTasks/ProjectTask";
-import { connect } from "react-redux";
 
 class Backlog extends Component {
   pt = (project_task) => {
     return <ProjectTask key={project_task.id} project_task={project_task} />;
   };
   render() {
-    const project_tasks = this.props.backlog.project_tasks;
+    const { project_tasks } = this.props;
     const TO_DO = project_tasks.filter(
       (project_task) => project_task.status === "TO_DO"
     );
@@ -51,7 +50,4 @@ class Backlog extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  backlog: state.backlog,
-});
-export default connect(mapStateToProps, {})(Backlog);
+export default Backlog;

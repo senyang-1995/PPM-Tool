@@ -30,10 +30,34 @@ export const addProjectTask = (
     const errMess = err.response.data;
     if (errMess.ProjectNotFound) {
       history.push(`/dashboard`);
-    } else {
-      console.log(errMess);
-      dispatch({ type: GET_ERRORS, payload: errMess });
     }
+    console.log(errMess);
+    dispatch({ type: GET_ERRORS, payload: errMess });
+  }
+};
+
+export const updateProjectTask = (
+  projectIdentifier,
+  projectSequence,
+  project_task,
+  history
+) => async (dispatch) => {
+  try {
+    await axios.patch(
+      `${url}/api/backlog/${projectIdentifier}/${projectSequence}`,
+      project_task
+    );
+    history.push({
+      pathname: `/projectBoard/${projectIdentifier}`,
+    });
+    dispatch({
+      type: GET_ERRORS,
+      payload: {},
+    });
+  } catch (err) {
+    const errMess = err.response.data;
+    console.log(errMess);
+    dispatch({ type: GET_ERRORS, payload: errMess });
   }
 };
 
@@ -46,6 +70,10 @@ export const getBackLog = (projectIdentifier, history, isDeleted) => async (
       await axios.get(`${url}/api/project/${projectIdentifier}`)
     ).data.projectName;
     const payload = { backlog: res.data, isDeleted: isDeleted };
+    dispatch({
+      type: GET_ERRORS,
+      payload: {},
+    });
     dispatch({
       type: GET_BACKLOG,
       payload: payload,
@@ -61,6 +89,10 @@ export const getBackLog = (projectIdentifier, history, isDeleted) => async (
     });
     console.log(isDeleted);
   } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data,
+    });
     history.push(`/dashboard`);
   }
 };

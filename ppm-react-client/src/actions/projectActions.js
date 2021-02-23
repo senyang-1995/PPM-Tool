@@ -4,7 +4,6 @@ import {
   GET_PROJECTS,
   GET_PROJECT,
   GET_SAVEDPROJECT,
-  SHOW_DELETED_PROJECTS,
   SHOW_PROJECTS_EXCLUDE_IDENTIFIER,
   EMPTY_OUT_PROJECTS,
 } from "./types";
@@ -12,7 +11,7 @@ import url from "../config";
 
 export const createProject = (project, history) => async (dispatch) => {
   try {
-    const res = await axios.post(`${url}/api/project/`, project);
+    await axios.post(`${url}/api/project/`, project);
     history.push({
       pathname: "/dashboard",
       state: { update: true },

@@ -11,7 +11,7 @@ public class ProjectTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(updatable = false)
+    @Column(updatable = false, unique = true)
     private String projectSequence;
     @NotBlank(message = "Please include a project summary!")
     private String summary;
@@ -19,14 +19,14 @@ public class ProjectTask {
     private String status;
     private Integer priority;
     private Date dueDate;
-    //ManyToOne with backlog
     @Column(updatable = false)
     private String projectIdentifier;
     private Date create_At;
     private Date update_At;
-    //cascade refresh: delete a project task => refresh the backlog
-    @ManyToOne (fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "backlog_id", updatable =  false)
+    private boolean deleted = false;
+    //ManyToOne with backlog
+    @ManyToOne (fetch = FetchType.EAGER)
+    @JoinColumn(name = "backlog_id", updatable = false)
     @JsonIgnore
     private Backlog backlog;
     public ProjectTask(){
@@ -118,6 +118,14 @@ public class ProjectTask {
 
     public void setBacklog(Backlog backlog) {
         this.backlog = backlog;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     @PrePersist

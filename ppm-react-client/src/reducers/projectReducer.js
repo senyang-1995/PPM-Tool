@@ -4,6 +4,7 @@ import {
   GET_SAVEDPROJECT,
   SHOW_DELETED_PROJECTS,
   SHOW_PROJECTS_EXCLUDE_IDENTIFIER,
+  EMPTY_OUT_PROJECTS,
 } from "../actions/types";
 
 const initialState = {
@@ -14,10 +15,17 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case GET_PROJECTS:
+    case EMPTY_OUT_PROJECTS:
       return {
         ...state,
-        projects: action.payload,
+        projects: [],
+      };
+    case GET_PROJECTS:
+      const { projects } = action.payload;
+      const { isDeleted } = action.payload;
+      return {
+        ...state,
+        projects: projects.filter((project) => project.deleted === isDeleted),
       };
     case GET_PROJECT:
       return {
@@ -25,13 +33,6 @@ export default function (state = initialState, action) {
         project: action.payload,
       };
 
-    case SHOW_DELETED_PROJECTS:
-      return {
-        ...state,
-        projects: state.projects.filter(
-          (project) => project.deleted === action.payload
-        ),
-      };
     case SHOW_PROJECTS_EXCLUDE_IDENTIFIER:
       return {
         ...state,

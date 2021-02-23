@@ -26,11 +26,14 @@ class UpdateProject extends Component {
     this.props.getProject(projectIdentifier, this.props.history);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.errors) {
+    console.log(Object.keys(nextProps.errors).length === 0);
+    if (!nextProps.errors || Object.keys(nextProps.errors).length === 0) {
+      this.setState({ errors: {} });
+      const project = nextProps.project;
+      this.setState(project);
+    } else {
       this.setState({ errors: nextProps.errors });
     }
-    const project = nextProps.project;
-    this.setState(project);
   }
 
   onChange(e) {

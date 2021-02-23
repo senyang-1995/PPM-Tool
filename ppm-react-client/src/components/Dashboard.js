@@ -1,45 +1,68 @@
 import React, { Component } from "react";
 import ProjectItem from "./Project/ProjectItem";
 import PropTypes from "prop-types";
-import CreateProjectButton from "./Project/CreateProjectButton";
-import { getProjects } from "../actions/projectActions";
+import {
+  getProjects,
+  removeAllProjects,
+  recoverAllProjects,
+  deleteAllRemovedProjects,
+} from "../actions/projectActions";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import {
+  createButton,
+  recoverAllbutton,
+  deleteAllbutton,
+  removeAllbutton,
+  toDeletedbutton,
+  toDBbutton,
+} from "../buttons/DB_Buttons";
 
 class Dashboard extends Component {
   componentDidMount() {
-    this.props.getProjects(false);
+    this.props.getProjects(this.props.isDeleted);
   }
 
   render() {
     const { projects } = this.props.projects;
+    const { isDeleted } = this.props;
+
+    const header =
+      isDeleted === false
+        ? "Your Project Dashboard"
+        : "Deleted Project Dashboard";
+
+    const button_one =
+      isDeleted === false
+        ? createButton
+        : recoverAllbutton(this.props.recoverAllProjects);
+
+    const button_two =
+      isDeleted === false
+        ? removeAllbutton(this.props.removeAllProjects)
+        : deleteAllbutton(this.props.deleteAllRemovedProjects);
+
+    const button_three = isDeleted === false ? toDeletedbutton : toDBbutton;
     return (
       <div className="projects">
         <div className="container">
           <div className="row">
             <div className="col-md-12">
-              <h1 className="display-4 text-center mt-5">
-                Your Project Dashboard
-              </h1>
-              <div className="row mt-5">
-                <div className="col-8">
-                  <CreateProjectButton />
-                </div>
-                <Link
-                  to="/deletedProjects"
-                  className="btn btn-lg btn-secondary"
-                >
-                  <i className="fa fa-trash pr-1 ml-2 mr-2">
-                    {" - - - - "}
-                    Deleted Projects {" - - - - "}
-                    <i className="fa fa-arrow-right pr-1"> </i>
-                  </i>
-                </Link>
+              <div className="row">
+                <h1 className="col-12 mt-5">{header}</h1>
+              </div>
+              <div className="row mt-5" style={{ display: "flex" }}>
+                {button_one}
+                {button_two}
+                {button_three}
               </div>
               <br />
               <hr />
               {projects.map((project) => (
-                <ProjectItem key={project.id} project={project} />
+                <ProjectItem
+                  key={project.id}
+                  project={project}
+                  isDeleted={isDeleted}
+                />
               ))}
             </div>
           </div>
@@ -48,14 +71,21 @@ class Dashboard extends Component {
     );
   }
 }
-
 Dashboard.propTypes = {
   getProjects: PropTypes.func.isRequired,
+  removeAllProjects: PropTypes.func.isRequired,
   projects: PropTypes.object.isRequired,
+  recoverAllProjects: PropTypes.object.isRequired,
+  deleteAllRemovedProjects: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   projects: state.projects,
 });
 
-export default connect(mapStateToProps, { getProjects })(Dashboard);
+export default connect(mapStateToProps, {
+  getProjects,
+  removeAllProjects,
+  recoverAllProjects,
+  deleteAllRemovedProjects,
+})(Dashboard);

@@ -1,33 +1,58 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { removeOrRecoverProject } from "../../actions/projectActions";
+import {
+  removeOrRecoverProject,
+  deleteProject,
+} from "../../actions/projectActions";
+import {
+  toPBbutton,
+  recoverPIbutton,
+  updatePIbutton,
+  removePIbutton,
+  deletePIbutton,
+} from "../../buttons/PI_Buttons";
 
 class ProjectItem extends Component {
   onRemoveClick = (projectIdentifier) => {
-    this.props.removeOrRecoverProject(projectIdentifier, "remove");
+    this.props.removeOrRecoverProject(projectIdentifier);
   };
 
   render() {
     const { project } = this.props;
+    const { isDeleted } = this.props;
+    const button_one =
+      isDeleted === false
+        ? toPBbutton(project)
+        : recoverPIbutton(this.props.removeOrRecoverProject, project);
+
+    const button_two =
+      isDeleted === false
+        ? updatePIbutton(project)
+        : deletePIbutton(this.props.deleteProject, project);
+
+    const button_three =
+      isDeleted === false
+        ? removePIbutton(this.props.removeOrRecoverProject, project)
+        : "";
+
     return (
       <div className="container">
         <div className="card card-body bg-light mb-3">
           <div className="row">
             <div className="col-8">
               <div className="row">
-                <div className="col-6">
+                <div className="col-md-6">
                   <h6>Unique Identifier:</h6>
                   <h5 className="mt-1 mb-3">{project.projectIdentifier}</h5>
                 </div>
-                <div className="col-6">
+                <div className="col-md-6">
                   <h6>Project Name:</h6>
                   <h5 className="mt-1 mb-3">{project.projectName}</h5>
                 </div>
               </div>
               <div className="row mt-3">
-                <div className="col-12">
+                <div className="col-auto">
                   <h6>Project Description:</h6>
                   <p className="mt-1 mb-3">{project.description}</p>
                 </div>
@@ -36,28 +61,9 @@ class ProjectItem extends Component {
 
             <div className="col-md-4">
               <ul className="list-group">
-                <a href="#">
-                  <li className="list-group-item board">
-                    <i className="fa fa-flag-checkered pr-1 ">
-                      {" "}
-                      Project Board{" "}
-                    </i>
-                  </li>
-                </a>
-                <Link to={`/updateProject/${project.projectIdentifier}`}>
-                  <li className="list-group-item update">
-                    <i className="fa fa-edit pr-1"> Update Project Info</i>
-                  </li>
-                </Link>
-                <li
-                  className="list-group-item delete"
-                  onClick={this.onRemoveClick.bind(
-                    this,
-                    project.projectIdentifier
-                  )}
-                >
-                  <i className="fa fa-minus-circle pr-1"> Remove Project</i>
-                </li>
+                {button_one}
+                {button_two}
+                {button_three}
               </ul>
             </div>
           </div>
@@ -69,6 +75,9 @@ class ProjectItem extends Component {
 
 ProjectItem.propTypes = {
   removeOrRecoverProject: PropTypes.func.isRequired,
+  deleteProject: PropTypes.func.isRequired,
 };
 
-export default connect(null, { removeOrRecoverProject })(ProjectItem);
+export default connect(null, { removeOrRecoverProject, deleteProject })(
+  ProjectItem
+);

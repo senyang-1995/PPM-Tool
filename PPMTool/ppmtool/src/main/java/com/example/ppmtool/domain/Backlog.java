@@ -17,12 +17,13 @@ public class Backlog {
 
     //OneToOne with project (one project will have one backlog)
     //Jsonignore breaks the infinite recursion problem of ownership
+    //cascade refresh: delete a project task => refresh the backlog
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "project_id", nullable = false)
     @JsonIgnore
     private Project project;
     //OneToMany projectTasks (one backlog can have many projectTasks, but one projectTask belongs to one backlog)
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "backlog")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH, orphanRemoval = true, mappedBy = "backlog")
     private List<ProjectTask> projectTasks = new ArrayList<>();
     public Backlog(){
     }

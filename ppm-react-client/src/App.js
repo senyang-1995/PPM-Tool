@@ -8,21 +8,50 @@ import AddProject from "./components/Project/AddProject";
 import { Provider } from "react-redux";
 import store from "./strore";
 import UpdateProject from "./components/Project/UpdateProject";
-import DeletedProjects from "./components/DeletedProjects";
-
+import ProjectBoard from "./components/ProjectBoard/ProjectBoard";
+import AddProjectTask from "./components/ProjectBoard/ProjectTasks/AddProjectTask";
+import UpdateProjectTask from "./components/ProjectBoard/ProjectTasks/UpdateProjectTask";
 function App() {
   return (
     <Provider store={store}>
       <Router>
         <div className="App">
           <Header />
-          <Route exact path="/dashboard" component={Dashboard} />
-          <Route exact path="/deletedProjects" component={DeletedProjects} />
+          <Route
+            exact
+            path="/dashboard"
+            render={(props) => <Dashboard {...props} isDeleted={false} />}
+          ></Route>
+          <Route
+            exact
+            path="/deletedDashboard"
+            render={(props) => <Dashboard {...props} isDeleted={true} />}
+          ></Route>
           <Route exact path="/addProject" component={AddProject} />
           <Route
             exact
             path="/updateProject/:projectIdentifier"
             component={UpdateProject}
+          />
+          <Route
+            exact
+            path="/projectBoard/:projectIdentifier"
+            render={(props) => <ProjectBoard {...props} isDeleted={false} />}
+          />
+          <Route
+            exact
+            path="/deletedProjectBoard/:projectIdentifier"
+            render={(props) => <ProjectBoard {...props} isDeleted={true} />}
+          />
+          <Route
+            exact
+            path="/addProjectTask/:projectIdentifier"
+            component={AddProjectTask}
+          />
+          <Route
+            exact
+            path="/updateProjectTask/:projectIdentifier/:projectSequence"
+            component={UpdateProjectTask}
           />
         </div>
       </Router>

@@ -54,6 +54,7 @@ public class ProjectService {
     public List<Project> findAllProjects(){
         return projectRepository.findAll();
     }
+    public List<Project> findAllDeleted(boolean isDeleted){return projectRepository.findByDeleted(isDeleted);}
 
     public Project deleteProjectByIdentifier(String projectId){
         Project toDel = this.findProjectByIdentifier(projectId);
@@ -64,6 +65,12 @@ public class ProjectService {
     public String deleteAllProjects(){
         projectRepository.deleteAll();
         return "All Projects are Deleted";
+    }
+
+    public Project removeOrRecoverProject(String projectId){
+        Project project = this.findProjectByIdentifier(projectId);
+        project.setDeleted(!project.isDeleted());
+        return projectRepository.save(project);
     }
 
     public Project updateProjectByIdentifier(String projectId, Project update){
@@ -77,4 +84,18 @@ public class ProjectService {
         return this.saveOrUpdateProject(update);
     }
 
+    public void deleteAllShownOrDeletedProjects(boolean isDeleted){
+        List<Project> list = findAllDeleted(isDeleted);
+        for (Project project: list) {
+            projectRepository.delete(project);
+        }
+    }
+
+    public void removeOrRecoverAllProjects(boolean isDeleted) {
+        List<Project> list = findAllDeleted(isDeleted);
+        for (Project project: list) {
+            project.setDeleted(!project.isDeleted());
+            projectRepository.save(project);
+        }
+    }
 }

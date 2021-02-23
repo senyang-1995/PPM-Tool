@@ -26,7 +26,7 @@ public class ProjectController {
 
     @Autowired
     private MapValidationErrorService mapValidationErrorService;
-    
+
     @PostMapping("")
     public ResponseEntity<?> createNewProject (@Valid @RequestBody Project project, BindingResult result){
         if (result.hasErrors()) return mapValidationErrorService.MapValidationService(result);
@@ -39,6 +39,12 @@ public class ProjectController {
         return new ResponseEntity<>(projectService.updateProjectByIdentifier(projectId, update), HttpStatus.OK);
     }
 
+    @PutMapping("/{projectId}/removeOrRecover")
+    public ResponseEntity<?> removeOrRecoverProjectById(@PathVariable String projectId){
+        return new ResponseEntity<>(projectService.removeOrRecoverProject(projectId), HttpStatus.ACCEPTED);
+    }
+
+
     @GetMapping("/{projectId}")
     public ResponseEntity<?> getProjectById(@PathVariable String projectId){
         return new ResponseEntity<>(projectService.findProjectByIdentifier(projectId), HttpStatus.ACCEPTED);
@@ -47,6 +53,13 @@ public class ProjectController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllProjects(){
         return new ResponseEntity<>(projectService.findAllProjects(), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/all/{isDeleted}")
+    public ResponseEntity<?> getAllProjects(@PathVariable String isDeleted){
+        if (isDeleted.equals("show")) return new ResponseEntity<>(projectService.findAllDeleted(false), HttpStatus.ACCEPTED);
+        else if (isDeleted.equals("deleted")) return new ResponseEntity<>(projectService.findAllDeleted(true), HttpStatus.ACCEPTED);
+        else return new ResponseEntity<>(projectService.findAllProjects(), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{projectId}")
@@ -58,5 +71,27 @@ public class ProjectController {
     public ResponseEntity<?> delAllProjects(){
         return new ResponseEntity<>(projectService.deleteAllProjects(),HttpStatus.OK);
     }
+
+    @DeleteMapping("/all/{isDeleted}")
+    public ResponseEntity<?> delAllShownOrDeletedProjects(@PathVariable String isDeleted){
+        boolean status = (isDeleted.equals("show"))? false: true;
+        projectService.deleteAllShownOrDeletedProjects(status);
+        return new ResponseEntity<>("All (isDeleted: " + status + ") projects are deleted",HttpStatus.OK);
+    }
+
+    @PutMapping("/all/remove")
+    public ResponseEntity<?> removeAllProjects(){
+        projectService.removeOrRecoverAllProjects(false);
+        String message = "All shown projects are removed";
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    @PutMapping("/all/recover")
+    public ResponseEntity<?> recoverAllProjects(){
+        projectService.removeOrRecoverAllProjects(true);
+        String message = "All removed projects are recovered";
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
 
 }
